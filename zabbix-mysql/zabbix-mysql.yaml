@@ -4,20 +4,20 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: zabbix-mariadb
+    name: zabbix-mysql
   spec:
     ports:
-      - name: zabbix-mariadb
+      - name: zabbix-mysql
         port: 3306
         protocol: TCP
     selector:
-      name: zabbix-mariadb
+      name: zabbix-mysql
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: zabbix-mariadb
+    name: zabbix-mysql
   spec:
     tags:
        - name: latest
@@ -27,27 +27,25 @@ items:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: zabbix-mariadb
+    name: zabbix-mysql
   spec:
     replicas: 1
     selector:
-      name: zabbix-mariadb
+      name: zabbix-mysql
     template:
       metadata:
         labels:
-          name: zabbix-mariadb
+          name: zabbix-mysql
       spec:
         containers:
-        - name: zabbix-mariadb
-          image: centos/mariadb55-centos7
+        - name: zabbix-mysql
+          image: openshift/mysql-55-centos7
           ports:
           - containerPort: 3306
           env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: password
             - name: MYSQL_USER
               value: zabbix
             - name: MYSQL_PASSWORD
               value: zabbix
-            - name: TERM
-              value: xterm
+            - name: MYSQL_DATABASE
+              value: zabbix
