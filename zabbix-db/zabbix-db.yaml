@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: zabbix-mysql
+  spec:
+    ports:
+      - name: zabbix-mysql
+        port: 3306
+        protocol: TCP
+    selector:
+      name: zabbix-mysql
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: zabbix-mysql
+  spec:
+    tags:
+       - name: latest
+         from:
+           kind: DockerImage
+           name: centos/mariadb55-centos7
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: zabbix-mysql
+  spec:
+    replicas: 1
+    selector:
+      name: zabbix-mysql
+    template:
+      metadata:
+        labels:
+          name: zabbix-mysql
+      spec:
+        containers:
+        - name: zabbix-mysql
+          image: openshift/mysql-55-centos7
+          ports:
+          - containerPort: 3306
+          env:
+            - name: MYSQL_USER
+              value: zabbix
+            - name: MYSQL_PASSWORD
+              value: zabbix
+            - name: MYSQL_DATABASE
+              value: zabbix
