@@ -13,8 +13,6 @@ RUN yum install -y http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-releas
 
 RUN yum install -y zabbix-agent
 
-# RUN chown -R zabbix:zabbix /etc/zabbix/
-
 USER zabbix
 
 EXPOSE 10050
